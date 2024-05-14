@@ -1,0 +1,8 @@
+.custom-node {
+  border: none;
+  background: none;
+}
+.custom-node:hover, .custom-node:focus {
+  border: none;
+  background: none;
+}
