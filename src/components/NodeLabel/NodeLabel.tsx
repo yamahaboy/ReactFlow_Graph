@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import React from 'react';
 interface NodeLabelProps {
-  id: number;
+  id: string;
   action:string
 }
 
@@ -15,9 +15,6 @@ const { id, action } = props
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'column',
-      border: '2px solid black',
-      borderRadius: '50%', 
-      backgroundColor: 'white',
       transition: 'background-color 0.3s ease', 
       ':hover': {
         backgroundColor: '#f5f5f5' 
@@ -27,8 +24,7 @@ const { id, action } = props
         outline: 'none' 
       }
     }}>
-      <Box sx={{fontSize:"24px"}}>{id}</Box>
-      <Box sx={{fontSize:"10px"}}>{action}</Box>
+      <Box sx={{fontSize:"10px"}} key={id}>{action}</Box>
     </Box>
   );
 };

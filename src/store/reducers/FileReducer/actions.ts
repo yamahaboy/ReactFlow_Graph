@@ -8,3 +8,8 @@ export const setDates = (dates: UserActionGroup[]) => {
 export const setSelectedUser = (selectedUser: UserActionGroup) => {
     return { type: FileReducerEnum.SELECTED_USER, payload: selectedUser }
 }
+
+
+export const setUserActionList = (userActionList: Map<string, string[]>) => {
+    return { type: FileReducerEnum.SET_USER_ACTION_LIST, payload: userActionList }
+}

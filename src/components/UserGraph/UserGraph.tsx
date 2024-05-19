@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import ReactFlow, {
   Controls,
   Background,
@@ -7,34 +7,25 @@ import ReactFlow, {
 import { Box } from "@mui/material";
 import { useAppSelector } from "../../store/store";
 import NodeLabel from "../NodeLabel/NodeLabel";
+import CustomEdge from "../CustomEdge/CustomEdge";
 import "./UserGraph.css";
-import { GraphNode, sugiyamaLayout } from "../utils/Sugiyama/Sugiyama";
+import { buildGraphNodes, sugiyamaLayout } from "../../utils/Sugiyama/Sugiyama";
+import UserActionList from "../UserActionList/UserActionList";
+import useFetchSVG from "../../hooks/useFetchSVG";
+import { createEdges } from "../../utils/EdgeUtils/EdgeUtils";
+
+const edgeTypes = { customCurvedEdge: CustomEdge };
 
 const UserGraph: React.FC = () => {
-  const selectedUser = useAppSelector(
-    (state) => state.fileReducer.selectedUser
+  const { selectedUser } = useAppSelector((state) => state.fileReducer);
+  const [edgeLabels, setEdgeLabels] = useState<Map<string, string[]>>(
+    new Map()
   );
+  const svgContent = useFetchSVG("/src/assets/svg/custom-markers.svg");
 
-  const graphNodes: GraphNode[] = useMemo(() => {
+  const graphNodes = useMemo(() => {
     if (!selectedUser) return [];
-
-    const nodes = selectedUser.actions.map((action, index) => ({
-      id: `node-${index}`,
-      edges: [] as GraphNode[],
-      action: action.action,
-      timestamp: action.timestamp,
-    }));
-
-    if (nodes.length > 1) {
-      nodes.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
-
-      for (let i = 0; i < nodes.length - 1; i++) {
-        nodes[i].edges.push(nodes[i + 1]);
-      }
-    }
-
-
-    return nodes;
+    return buildGraphNodes(selectedUser.actions);
   }, [selectedUser]);
 
   const positionedNodes = useMemo(() => {
@@ -45,43 +36,46 @@ const UserGraph: React.FC = () => {
     return nodes.map((node) => ({
       id: node.id,
       type: "custom",
-      data: { 
-        label: <NodeLabel 
-          id={parseInt(node.id.split('-')[1]) + 1} 
-          action={node.action} 
-        /> 
+      data: {
+        label: <NodeLabel id={node.id} action={node.action} />,
       },
-      position: { x: node.x, y: node.y },
-      style: { border: "none", background: "none" },
+      position: { x: node.x ?? 0, y: node.y ?? 0 },
+      style: { border: "1px solid #000", borderRadius: "50%", padding: "10px" },
       className: "react-flow__node custom-node",
     }));
   }, [graphNodes]);
 
   const edges = useMemo(() => {
-    const createdEdges = graphNodes.flatMap((node, index) => {
-      return node.edges.map(edge => ({
-        id: `edge-${index}-${edge.id.split('-')[1]}`,
-        source: node.id,
-        target: edge.id,
-        type: "straight",
-        animated: true,
-      }));
-    });
-
-
-    return createdEdges;
-  }, [graphNodes]);
+    const edgeLabels = new Map<string, string[]>();
+    if (selectedUser) {
+      selectedUser.actions.forEach((action, index) => {
+        if (index > 0) {
+          const prevAction = selectedUser.actions[index - 1].action;
+          const edgeKey = `${prevAction}->${action.action}`;
+          if (!edgeLabels.has(edgeKey)) {
+            edgeLabels.set(edgeKey, []);
+          }
+          edgeLabels.get(edgeKey)?.push(`${index}`);
+        }
+      });
+      setEdgeLabels(edgeLabels);
+      return createEdges(graphNodes, selectedUser);
+    }
+    return [];
+  }, [graphNodes, selectedUser]);
 
   return (
     <Box
-      sx={{ flex: 1, width: "100%", minHeight: "500px", minWidth: "1000px" }}
+      sx={{  width: "100%", minHeight: "2000px", minWidth: "2000px", zoom:"0.9"}}
     >
       <ReactFlowProvider>
-        <ReactFlow nodes={positionedNodes} edges={edges}>
+        <ReactFlow nodes={positionedNodes} edges={edges} edgeTypes={edgeTypes}>
           <Controls />
           <Background />
         </ReactFlow>
       </ReactFlowProvider>
+      <UserActionList userActionList={edgeLabels} />
+      <div dangerouslySetInnerHTML={{ __html: svgContent }} /> 
     </Box>
   );
 };

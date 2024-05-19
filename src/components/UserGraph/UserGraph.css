@@ -1,8 +1,37 @@
-.custom-node {
-  border: none;
-  background: none;
+.react-flow__node.custom-node {
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 50%;
+  padding: 20px;
+  text-align: center;
+  font-size: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 130px;
+  height: 130px;
 }
-.custom-node:hover, .custom-node:focus {
-  border: none;
-  background: none;
+
+.react-flow__edge-path {
+  stroke: #000000;
+  stroke-width: 2px;
+  fill: none;
 }
+
+.react-flow__background {
+  fill: #f0f0f0;
+}
+
+.react-flow__node-text {
+  fill: #000000;
+}
+
+.react-flow__handle {
+  background: #ffffff;
+  border: 1px solid #000000;
+}
+
+.react-flow__controls {
+  background-color: #ffffff;
+}
+
