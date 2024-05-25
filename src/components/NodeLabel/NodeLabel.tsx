@@ -15,14 +15,6 @@ const { id, action } = props
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'column',
-      transition: 'background-color 0.3s ease', 
-      ':hover': {
-        backgroundColor: '#f5f5f5' 
-      },
-      ':focus-visible': {
-        backgroundColor: '#e0e0e0', 
-        outline: 'none' 
-      }
     }}>
       <Box sx={{fontSize:"10px"}} key={id}>{action}</Box>
     </Box>

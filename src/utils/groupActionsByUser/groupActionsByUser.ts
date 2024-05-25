@@ -4,16 +4,15 @@ const groupActionsByUser = (userActions: UserAction[]): UserActionGroup[] => {
     const groups: Record<string, UserActionGroup> = {};
 
     userActions.forEach(action => {
-        const groupKey = `${action.userId}_${action.sessionId}`;
-        if (!groups[groupKey]) {
-            groups[groupKey] = {
+        if (!groups[action.userId]) {
+            groups[action.userId] = {
                 userId: action.userId,
                 userName: action.userName,
                 sessionId: action.sessionId,
                 actions: []
             };
         }
-        groups[groupKey].actions.push({
+        groups[action.userId].actions.push({
             action: action.action,
             timestamp: action.timestamp
         });

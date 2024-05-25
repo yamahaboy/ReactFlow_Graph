@@ -59,6 +59,7 @@ const UserGraph: React.FC = () => {
         }
       });
       setEdgeLabels(edgeLabels);
+      console.log(edgeLabels)
       return createEdges(graphNodes, selectedUser);
     }
     return [];
