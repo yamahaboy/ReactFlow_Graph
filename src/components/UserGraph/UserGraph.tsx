@@ -1,10 +1,6 @@
 import React, { useMemo, useState } from "react";
-import ReactFlow, {
-  Controls,
-  Background,
-  ReactFlowProvider,
-} from "react-flow-renderer";
-import { Box } from "@mui/material";
+import ReactFlow, { Controls, Background, ReactFlowProvider } from "react-flow-renderer";
+import { Box, Button } from "@mui/material";
 import { useAppSelector } from "../../store/store";
 import NodeLabel from "../NodeLabel/NodeLabel";
 import CustomEdge from "../CustomEdge/CustomEdge";
@@ -18,11 +14,9 @@ const edgeTypes = { customCurvedEdge: CustomEdge };
 
 const UserGraph: React.FC = () => {
   const { selectedUser } = useAppSelector((state) => state.fileReducer);
-  const [edgeLabels, setEdgeLabels] = useState<Map<string, string[]>>(
-    new Map()
-  );
+  const [edgeLabels, setEdgeLabels] = useState<Map<string, string[]>>(new Map());
+  const [highlightIssues, setHighlightIssues] = useState(false);
   const svgContent = useFetchSVG("/src/assets/svg/custom-markers.svg");
-
   const graphNodes = useMemo(() => {
     if (!selectedUser) return [];
     return buildGraphNodes(selectedUser.actions);
@@ -59,24 +53,38 @@ const UserGraph: React.FC = () => {
         }
       });
       setEdgeLabels(edgeLabels);
-      console.log(edgeLabels)
-      return createEdges(graphNodes, selectedUser);
+      return createEdges(graphNodes, selectedUser, edgeLabels, highlightIssues);
     }
     return [];
-  }, [graphNodes, selectedUser]);
+  }, [graphNodes, selectedUser, highlightIssues]);
 
   return (
-    <Box
-      sx={{  width: "100%", minHeight: "2000px", minWidth: "2000px", zoom:"0.9"}}
-    >
+    <Box sx={{ width: "100%", minHeight: "2000px", minWidth: "2000px", zoom: "0.9" }}>
+      <Button onClick={() => setHighlightIssues(!highlightIssues)} sx={{
+        border: "1px solid #c8bfbf",
+        color: "#1976d2",
+        "&:hover": {
+          backgroundColor: "#e3f2fd",
+        },
+        fontWeight: "bold",
+        borderRadius: "8px",
+        padding: "10px 20px",
+        gap: "10px",
+        marginLeft: "10px",
+        marginTop: "10px"
+      }}>
+        {highlightIssues ? "Remove highlight" : "Show problems"}
+      </Button>
       <ReactFlowProvider>
         <ReactFlow nodes={positionedNodes} edges={edges} edgeTypes={edgeTypes}>
           <Controls />
           <Background />
         </ReactFlow>
       </ReactFlowProvider>
-      <UserActionList userActionList={edgeLabels} />
-      <div dangerouslySetInnerHTML={{ __html: svgContent }} /> 
+      <UserActionList
+        userActionList={edgeLabels}
+      />
+      <div dangerouslySetInnerHTML={{ __html: svgContent }} />
     </Box>
   );
 };

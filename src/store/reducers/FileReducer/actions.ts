@@ -6,7 +6,6 @@ export const setDates = (dates: UserActionGroup[]) => {
 }
 
 export const setSelectedUser = (selectedUser: UserActionGroup) => {
-    console.log(selectedUser, "selectedUser")
     return { type: FileReducerEnum.SELECTED_USER, payload: selectedUser }
 }
 

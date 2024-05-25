@@ -22,7 +22,7 @@ const UserActionList: React.FC<UserActionListProps> = ({ userActionList }) => {
             right: "-20px",
             top: "-50px",
             width: "500px",
-            backgroundColor:"#fff"
+            backgroundColor: "#fff"
           }}
         >
           <Typography variant="h4" component="h2" gutterBottom>

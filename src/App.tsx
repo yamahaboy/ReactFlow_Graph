@@ -16,7 +16,6 @@ function App() {
           timestamp: new Date(action.timestamp).toISOString(),
         }));
         const groupedActions = groupActionsByUser(serializedActions);
-        console.log(groupedActions)
         dispatch(setDates(groupedActions));
       } catch (error) {
         console.error("Error reading data:", error);

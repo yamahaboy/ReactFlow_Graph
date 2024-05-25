@@ -34,7 +34,7 @@ export const sugiyamaLayout = (nodes: GraphNode[]): GraphNode[] => {
 
   const minimizeCrossings = () => {
     layers.forEach((layer, index) => {
-      if (index === 0) return; 
+      if (index === 0) return;
 
       const orderMap = new Map<GraphNode, number>();
 
@@ -56,8 +56,8 @@ export const sugiyamaLayout = (nodes: GraphNode[]): GraphNode[] => {
   layers.forEach((layer, layerIndex) => {
     const offsetX = (maxLayerWidth - layer.nodes.length) * 100 / 2;
     layer.nodes.forEach((node, nodeIndex) => {
-      node.x = offsetX + nodeIndex * 400;
-      node.y = layerIndex * 400;
+      node.x = offsetX + nodeIndex * 300;
+      node.y = layerIndex * 300;
     });
   });
 
